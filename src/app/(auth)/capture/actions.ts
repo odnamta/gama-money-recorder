@@ -8,7 +8,11 @@ export type SaveExpenseResult =
   | { success: true; data: { id: string } }
   | { success: false; error: string }
 
-export async function saveExpense(formData: ExpenseFormData): Promise<SaveExpenseResult> {
+interface SaveExpenseInput extends ExpenseFormData {
+  receiptId?: string | null
+}
+
+export async function saveExpense(formData: SaveExpenseInput): Promise<SaveExpenseResult> {
   try {
     // Validate input
     const validated = expenseFormSchema.parse(formData)
@@ -31,13 +35,12 @@ export async function saveExpense(formData: ExpenseFormData): Promise<SaveExpens
       .insert({
         user_id: user.id,
         amount: validated.amount,
-        category: validated.category,
+        category_id: null, // Will be linked to category table later
         vendor_name: validated.vendorName || null,
         vendor_id: validated.vendorId || null,
         description: validated.description || null,
         expense_date: validated.expenseDate.toISOString().split('T')[0],
-        sync_status: 'synced',
-        approval_status: 'draft',
+        receipt_id: formData.receiptId || null,
       })
       .select('id')
       .single()

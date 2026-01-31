@@ -41,6 +41,8 @@ export const expenseFormSchema = z.object({
       invalid_type_error: 'Tanggal tidak valid',
     })
     .max(new Date(), 'Tanggal tidak boleh di masa depan'),
+
+  receiptId: z.string().uuid().optional().nullable(),
 })
 
 export type ExpenseFormData = z.infer<typeof expenseFormSchema>
@@ -52,4 +54,5 @@ export const expenseFormDefaults: Partial<ExpenseFormData> = {
   vendorId: null,
   description: '',
   expenseDate: new Date(),
+  receiptId: null,
 }

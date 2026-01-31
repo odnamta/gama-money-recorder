@@ -10,6 +10,8 @@ import { CategorySelector } from '@/components/molecules/CategorySelector'
 import { VendorInput, type VendorSuggestion } from '@/components/molecules/VendorInput'
 import { DatePicker } from '@/components/molecules/DatePicker'
 import { DescriptionInput } from '@/components/molecules/DescriptionInput'
+import { ReceiptCapture } from '@/components/molecules/ReceiptCapture'
+import { ReceiptWarning } from '@/components/molecules/ReceiptWarning'
 import { saveExpense } from '@/app/(auth)/capture/actions'
 import type { ExpenseCategory } from '@/constants/expense-categories'
 
@@ -21,6 +23,7 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
   const [isPending, startTransition] = useTransition()
   const [showAddAnother, setShowAddAnother] = useState(false)
   const [vendorSuggestions] = useState<VendorSuggestion[]>(initialVendors)
+  const [receiptId, setReceiptId] = useState<string | null>(null)
 
   const {
     watch,
@@ -36,9 +39,19 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
   const expenseDate = watch('expenseDate')
   const description = watch('description')
 
+  const handleReceiptCaptured = (id: string) => {
+    setReceiptId(id)
+    setValue('receiptId', id)
+  }
+
+  const handleReceiptRemoved = () => {
+    setReceiptId(null)
+    setValue('receiptId', null)
+  }
+
   const onSubmit = (data: ExpenseFormData) => {
     startTransition(async () => {
-      const result = await saveExpense(data)
+      const result = await saveExpense({ ...data, receiptId })
 
       if (result.success) {
         toast.success('Pengeluaran tersimpan', {
@@ -55,6 +68,7 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
 
   const handleAddAnother = () => {
     resetForm()
+    setReceiptId(null)
     setShowAddAnother(false)
   }
 
@@ -127,6 +141,19 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
         onChange={(value) => setValue('description', value)}
         error={errors.description?.message}
         disabled={isPending}
+      />
+
+      {/* Receipt Capture */}
+      <ReceiptCapture
+        onReceiptCaptured={handleReceiptCaptured}
+        onReceiptRemoved={handleReceiptRemoved}
+        disabled={isPending}
+      />
+
+      {/* Receipt Warning for high-value expenses */}
+      <ReceiptWarning
+        amount={amount ?? 0}
+        hasReceipt={!!receiptId}
       />
 
       {/* Submit Button */}
