@@ -7,39 +7,39 @@
 ## Tasks
 
 ### Phase 1: Database Setup
-- [ ] 1.1 Create expense_drafts table migration
-- [ ] 1.2 Set up RLS policies for expense_drafts
-- [ ] 1.3 Regenerate TypeScript types
+- [x] 1.1 Create expense_drafts table migration
+- [x] 1.2 Set up RLS policies for expense_drafts
+- [x] 1.3 Regenerate TypeScript types
 
 ### Phase 2: Form Components
-- [ ] 2.1 Create AmountInput component with IDR formatting
-- [ ] 2.2 Create CategorySelector component with icons
-- [ ] 2.3 Create VendorInput component with autocomplete
-- [ ] 2.4 Create DatePicker component
-- [ ] 2.5 Create DescriptionInput component
+- [x] 2.1 Create AmountInput component with IDR formatting
+- [x] 2.2 Create CategorySelector component with icons
+- [x] 2.3 Create VendorInput component with autocomplete
+- [x] 2.4 Create DatePicker component
+- [x] 2.5 Create DescriptionInput component
 
 ### Phase 3: Form Logic
-- [ ] 3.1 Create expense form schema with Zod
-- [ ] 3.2 Create useExpenseForm hook
-- [ ] 3.3 Implement form validation
-- [ ] 3.4 Create saveExpense server action
+- [x] 3.1 Create expense form schema with Zod
+- [x] 3.2 Create useExpenseForm hook
+- [x] 3.3 Implement form validation
+- [x] 3.4 Create saveExpense server action
 
 ### Phase 4: Vendor Suggestions
-- [ ] 4.1 Create getRecentVendors query
-- [ ] 4.2 Create searchVendors query
-- [ ] 4.3 Implement suggestion dropdown UI
+- [x] 4.1 Create getRecentVendors query
+- [x] 4.2 Create searchVendors query
+- [x] 4.3 Implement suggestion dropdown UI
 
 ### Phase 5: Page Assembly
-- [ ] 5.1 Create ExpenseCaptureForm organism
-- [ ] 5.2 Build capture page with form
-- [ ] 5.3 Add success/error toast notifications
-- [ ] 5.4 Implement "add another" flow
+- [x] 5.1 Create ExpenseCaptureForm organism
+- [x] 5.2 Build capture page with form
+- [x] 5.3 Add success/error toast notifications
+- [x] 5.4 Implement "add another" flow
 
 ### Phase 6: Polish
-- [ ] 6.1 Add loading states
-- [ ] 6.2 Add form reset after success
-- [ ] 6.3 Optimize for mobile keyboard
-- [ ] 6.4 Test on various mobile devices
+- [x] 6.1 Add loading states
+- [x] 6.2 Add form reset after success
+- [x] 6.3 Optimize for mobile keyboard
+- [x] 6.4 Test on various mobile devices
 
 ## Verification
 - [ ] Can enter amount with proper formatting
