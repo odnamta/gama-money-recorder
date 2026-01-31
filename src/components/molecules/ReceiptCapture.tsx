@@ -10,6 +10,8 @@ import { uploadReceipt } from '@/lib/receipts/upload';
 interface ReceiptCaptureProps {
   onReceiptCaptured?: (receiptId: string, storagePath: string) => void;
   onReceiptRemoved?: () => void;
+  /** Callback when image is ready for OCR processing (after compression, before upload) */
+  onImageReady?: (file: File) => void;
   className?: string;
   disabled?: boolean;
 }
@@ -19,6 +21,7 @@ type CaptureState = 'idle' | 'preview' | 'uploading' | 'uploaded';
 export function ReceiptCapture({
   onReceiptCaptured,
   onReceiptRemoved,
+  onImageReady,
   className,
   disabled = false,
 }: ReceiptCaptureProps) {
@@ -46,17 +49,21 @@ export function ReceiptCapture({
     try {
       const result = await compressToTargetSize(file, 1024 * 1024); // 1MB target
       setCompressionResult(result);
-      setSelectedFile(new File([result.blob], file.name, { type: result.blob.type }));
+      const compressedFile = new File([result.blob], file.name, { type: result.blob.type });
+      setSelectedFile(compressedFile);
       
       // Create preview URL
       const url = URL.createObjectURL(result.blob);
       setPreviewUrl(url);
       setState('preview');
+      
+      // Notify parent that image is ready for OCR
+      onImageReady?.(compressedFile);
     } catch (err) {
       console.error('Compression error:', err);
       setError('Gagal memproses gambar');
     }
-  }, []);
+  }, [onImageReady]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

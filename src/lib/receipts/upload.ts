@@ -193,3 +193,79 @@ export async function getReceiptUrl(storagePath: string): Promise<string | null>
     return null;
   }
 }
+
+
+/**
+ * OCR result data to store in database
+ */
+export interface OCRResultData {
+  rawText: string;
+  confidence: number;
+  processingTime: number;
+  provider: 'google_vision' | 'tesseract' | 'manual';
+  extractedAmount?: number;
+  extractedAmountConfidence?: number;
+  extractedVendorName?: string;
+  extractedVendorConfidence?: number;
+  extractedDate?: string;
+  extractedDateConfidence?: number;
+}
+
+/**
+ * Update a receipt record with OCR results
+ */
+export async function updateReceiptWithOCR(
+  receiptId: string,
+  ocrData: OCRResultData
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const supabase = await createClient();
+    
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return { success: false, error: 'Tidak terautentikasi' };
+    }
+
+    // Verify ownership
+    const { data: receipt, error: fetchError } = await supabase
+      .from('expense_receipts')
+      .select('user_id')
+      .eq('id', receiptId)
+      .single();
+
+    if (fetchError || !receipt) {
+      return { success: false, error: 'Struk tidak ditemukan' };
+    }
+
+    if (receipt.user_id !== user.id) {
+      return { success: false, error: 'Tidak memiliki akses' };
+    }
+
+    // Update with OCR data
+    const { error: updateError } = await supabase
+      .from('expense_receipts')
+      .update({
+        ocr_raw_text: ocrData.rawText,
+        ocr_confidence: ocrData.confidence,
+        ocr_processing_time: ocrData.processingTime,
+        ocr_provider: ocrData.provider,
+        extracted_amount: ocrData.extractedAmount,
+        extracted_amount_confidence: ocrData.extractedAmountConfidence,
+        extracted_vendor_name: ocrData.extractedVendorName,
+        extracted_vendor_confidence: ocrData.extractedVendorConfidence,
+        extracted_date: ocrData.extractedDate,
+        extracted_date_confidence: ocrData.extractedDateConfidence,
+      })
+      .eq('id', receiptId);
+
+    if (updateError) {
+      console.error('OCR update error:', updateError);
+      return { success: false, error: 'Gagal menyimpan hasil OCR' };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Update receipt OCR error:', error);
+    return { success: false, error: 'Terjadi kesalahan' };
+  }
+}
