@@ -1,0 +1,13 @@
+{
+  "name": "Update Database Schema",
+  "version": "1.0.0",
+  "description": "Automatically updates database-schema.md when types/supabase.ts is modified (after running npx supabase gen types)",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["**/types/supabase.ts", "**/types/database.types.ts"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "The Supabase types file was modified (likely after running `npx supabase gen types`).\n\nPlease do the following:\n\n1. **Compare** the new types with .kiro/steering/database-schema.md\n\n2. **Update database-schema.md** if there are:\n   - New tables added\n   - Columns added/removed/modified\n   - New enums or types\n   - Changed constraints\n\n3. **Add entry to CHANGELOG.md** under [Unreleased]:\n   ```\n   ### Changed\n   - Database schema updated: [describe what changed]\n   ```\n\n4. **Keep database-schema.md in sync** with:\n   - SQL CREATE statements\n   - Column descriptions table\n   - TypeScript interfaces\n   - Common query patterns (if new tables)\n\nDO NOT update project-context.md for schema changes - only CHANGELOG.md and database-schema.md."
+  }
+}

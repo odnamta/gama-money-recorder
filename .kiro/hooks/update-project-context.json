@@ -1,0 +1,12 @@
+{
+  "name": "Update Project Context",
+  "version": "1.0.0",
+  "description": "After completing significant work (features, fixes, refactors), updates Recent Changes in project-context.md and adds detailed entry to CHANGELOG.md",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Check if significant work was completed in this session (new features, bug fixes, refactors, or spec task completions).\n\nIf yes, do the following:\n\n1. **CHANGELOG.md** (detailed changes):\n   - Add a new entry under [Unreleased] with:\n     - Date and brief description\n     - What was added/changed/fixed\n     - Files affected\n     - Related spec (if any)\n\n2. **.kiro/steering/project-context.md** (brief summary only):\n   - Update 'Recent Changes' section with ONE LINE summary\n   - Update 'Active Sprint' status if needed\n   - Keep it minimal - point to CHANGELOG.md for details\n\nFormat for project-context.md Recent Changes:\n```\n### Recent Changes\n> See [CHANGELOG.md](../../CHANGELOG.md) for full history\n\n- [2024-01-15] v0.1 Foundation setup complete\n- [2024-01-14] Initial project scaffolding\n```\n\nDO NOT bloat project-context.md with details. Keep changelog as the source of truth for change history."
+  }
+}
