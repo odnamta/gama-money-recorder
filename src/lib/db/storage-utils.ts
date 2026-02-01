@@ -158,3 +158,79 @@ export function formatBytes(bytes: number): string {
   
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
 }
+
+/**
+ * Get receipt storage size
+ * Estimates total size of receipt images in IndexedDB
+ */
+export async function getReceiptStorageSize(): Promise<number> {
+  try {
+    const receipts = await db.receipts.toArray()
+    
+    // Sum up the blob sizes
+    let totalSize = 0
+    for (const receipt of receipts) {
+      if (receipt.imageBlob) {
+        totalSize += receipt.imageBlob.size
+      }
+    }
+    
+    return totalSize
+  } catch (error) {
+    console.error('Failed to calculate receipt storage size:', error)
+    return 0
+  }
+}
+
+/**
+ * Clear synced data from IndexedDB
+ * Only removes items that have been successfully synced
+ */
+export async function clearSyncedData(): Promise<void> {
+  try {
+    // Delete synced expenses
+    const syncedExpenses = await db.expenses
+      .where('syncStatus')
+      .equals('synced')
+      .toArray()
+    
+    await db.expenses.bulkDelete(syncedExpenses.map(e => e.id))
+    
+    // Delete synced receipts
+    const syncedReceipts = await db.receipts
+      .where('syncStatus')
+      .equals('synced')
+      .toArray()
+    
+    await db.receipts.bulkDelete(syncedReceipts.map(r => r.id))
+    
+    // Delete completed sync queue items
+    const completedQueue = await db.syncQueue
+      .where('status')
+      .equals('completed')
+      .toArray()
+    
+    await db.syncQueue.bulkDelete(completedQueue.map(q => q.id))
+  } catch (error) {
+    console.error('Failed to clear synced data:', error)
+    throw error
+  }
+}
+
+/**
+ * Clear all cache from IndexedDB
+ * WARNING: This will delete ALL data including pending items
+ */
+export async function clearAllCache(): Promise<void> {
+  try {
+    await Promise.all([
+      db.expenses.clear(),
+      db.receipts.clear(),
+      db.syncQueue.clear(),
+      db.jobOrders.clear()
+    ])
+  } catch (error) {
+    console.error('Failed to clear all cache:', error)
+    throw error
+  }
+}

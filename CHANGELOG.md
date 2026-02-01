@@ -8,12 +8,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- v0.7 Settings Page - User preferences, sync settings, storage management
 - v0.8 Dashboard - Summary stats, quick actions, recent activity
 - v0.9 ERP Integration - Create bkk_records drafts, approval workflow
 - v1.0 Polish & PWA - Install prompts, notifications, final testing
 
 ---
+
+## [0.7.0] - 2026-02-01
+
+### Added
+- Settings page with comprehensive app configuration
+- `ProfileSection` with user avatar and role badge
+- `UserAvatar` component with initials fallback
+- `RoleBadge` component for role display
+- `SyncSection` with auto-sync toggle and interval selector
+- WiFi-only sync option
+- Last sync timestamp display
+- `PendingSyncSection` with pending/failed counts
+- Manual sync button integration
+- Retry failed items functionality
+- `StorageSection` with usage breakdown
+- Storage usage calculation hook (`useStorageUsage`)
+- Clear synced data button
+- Clear all cache button with warning
+- `AppInfoSection` with version and links
+- Support and privacy policy links
+- `LogoutSection` with pending data warning
+- Settings storage utilities with localStorage
+- `useSettings` hook for reactive settings
+- Avatar and Select UI components from shadcn/ui
+- Storage management utilities (`clearSyncedData`, `clearAllCache`)
 
 ## [0.6.0] - 2026-02-01
 
@@ -141,15 +165,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Roadmap
 
-### v0.7 - Settings Page (Next)
-- [ ] User profile display
-- [ ] Sync settings (auto-sync toggle, sync interval)
-- [ ] Storage management (clear cache, view usage)
-- [ ] Pending sync list with retry
-- [ ] App version info
-- [ ] Logout functionality
-
-### v0.8 - Dashboard
+### v0.8 - Dashboard (Next)
 - [ ] Summary statistics (today, week, month)
 - [ ] Quick capture button
 - [ ] Recent expenses list

@@ -154,7 +154,7 @@ formatDate(date, 'relative') // "Hari ini" / "Kemarin" / "3 hari lalu"
 - **TypeScript**: 0 errors
 - **ESLint**: 0 errors
 - **Build**: Passing
-- **Version**: v0.6
+- **Version**: v0.7
 
 ## Feature Roadmap
 
@@ -167,15 +167,15 @@ formatDate(date, 'relative') // "Hari ini" / "Kemarin" / "3 hari lalu"
 | v0.4 | Job Linking | ✅ Done |
 | v0.5 | Offline Support | ✅ Done |
 | v0.6 | History View | ✅ Done |
-| v0.7 | Settings Page | 🔜 Next |
-| v0.8 | Dashboard | 📋 Planned |
+| v0.7 | Settings Page | ✅ Done |
+| v0.8 | Dashboard | 🔜 Next |
 | v0.9 | ERP Integration | 📋 Planned |
 | v1.0 | Polish & PWA | 📋 Planned |
 
 ## Active Sprint Tasks
 
-- [ ] v0.7 Settings Page - User preferences, sync settings, storage management
-- [ ] Test offline sync with real devices
+- [ ] v0.8 Dashboard - Summary stats, quick actions, recent activity
+- [ ] Test settings page with real devices
 - [ ] QA testing with field staff
 
 ## DO NOT
@@ -216,6 +216,7 @@ const data = result.data as TableType[] | null
 
 ## Recent Changes
 
+- 2026-02-01: v0.7 - Settings Page (profile, sync settings, storage management, logout)
 - 2026-02-01: v0.6 - History View (filtering, search, detail view, pull-to-refresh, pagination)
 - 2026-01-31: v0.5 - Offline Support (IndexedDB, sync queue, job caching, sync notifications)
 - 2026-01-30: v0.4 - Job Linking (job search, recent jobs, GPS validation, location warning)
