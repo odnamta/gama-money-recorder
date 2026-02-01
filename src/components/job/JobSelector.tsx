@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { Search, Loader2 } from 'lucide-react'
+import { Search, Loader2, WifiOff } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
@@ -41,7 +41,7 @@ interface JobSelectorProps {
 }
 
 /**
- * Container component for job order selection
+ * Container component for job order selection with offline support
  * 
  * Features:
  * - Overhead toggle at the top
@@ -49,6 +49,7 @@ interface JobSelectorProps {
  * - Shows recent jobs list when no job is selected
  * - Search button to open JobSearchDialog
  * - Handles overhead state (when overhead, disables job selection)
+ * - Shows offline indicator when using cached data
  */
 export function JobSelector({
   value,
@@ -61,7 +62,7 @@ export function JobSelector({
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   
   // Fetch recent jobs for quick selection
-  const { recentJobs, isLoading: isLoadingRecent } = useRecentJobs()
+  const { recentJobs, isLoading: isLoadingRecent, isUsingCache } = useRecentJobs()
   
   // Fetch selected job details
   const { job: selectedJob, isLoading: isLoadingJob } = useJob(value)
@@ -129,6 +130,14 @@ export function JobSelector({
           'space-y-3',
           disabled && 'opacity-50 pointer-events-none'
         )}>
+          {/* Offline Indicator - shown when using cached data */}
+          {isUsingCache && !value && (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200 text-amber-800 text-sm">
+              <WifiOff className="h-4 w-4 flex-shrink-0" />
+              <span>Menggunakan data tersimpan (offline)</span>
+            </div>
+          )}
+
           {/* Loading state for selected job */}
           {isLoadingJob && value && (
             <div className="flex items-center justify-center py-4">

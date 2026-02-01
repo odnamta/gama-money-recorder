@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useTransition, useCallback, useEffect } from 'react'
-import { Loader2, Save, Plus, MapPin, MapPinOff } from 'lucide-react'
+import { useState, useTransition, useCallback, useEffect, useRef } from 'react'
+import { Loader2, Save, Plus, MapPin, MapPinOff, WifiOff } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils/cn'
 import { useExpenseForm, type ExpenseFormData } from '@/hooks/use-expense-form'
@@ -16,10 +16,10 @@ import { ReceiptWarning } from '@/components/molecules/ReceiptWarning'
 import { OCRStatus, ConfidenceField, ManualReviewPrompt } from '@/components/ocr'
 import { JobSelector } from '@/components/job'
 import { useGPS } from '@/hooks/use-gps'
-import { saveExpense } from '@/app/(auth)/capture/actions'
-import { updateReceiptWithOCR } from '@/lib/receipts/upload'
+import { saveExpenseLocally, saveReceiptLocally } from '@/lib/db/operations'
 import { requiresManualReview } from '@/types/ocr'
 import type { ExpenseCategory } from '@/constants/expense-categories'
+import type { OCRResult } from '@/types/ocr'
 
 interface ExpenseCaptureFormProps {
   initialVendors?: VendorSuggestion[]
@@ -40,6 +40,9 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
   // Job linking state
   const [jobOrderId, setJobOrderId] = useState<string | null>(null)
   const [isOverhead, setIsOverhead] = useState(false)
+
+  // Store the captured receipt file for offline save
+  const capturedReceiptFileRef = useRef<File | null>(null)
 
   // GPS capture hook
   const {
@@ -113,34 +116,22 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
     setReceiptId(id)
     setValue('receiptId', id)
     
-    // Store OCR results in database if available
-    if (ocrResult) {
-      const { extractedData } = ocrResult
-      await updateReceiptWithOCR(id, {
-        rawText: ocrResult.rawText,
-        confidence: ocrResult.confidence,
-        processingTime: ocrResult.processingTime,
-        provider: ocrResult.provider,
-        extractedAmount: extractedData.amount,
-        extractedAmountConfidence: extractedData.amountConfidence,
-        extractedVendorName: extractedData.vendorName,
-        extractedVendorConfidence: extractedData.vendorNameConfidence,
-        extractedDate: extractedData.date,
-        extractedDateConfidence: extractedData.dateConfidence,
-      })
-    }
-  }, [setValue, ocrResult])
+    // Note: OCR results are now stored locally with the receipt during form submission
+    // The server-side receipt record will be created during sync
+  }, [setValue])
 
   const handleReceiptRemoved = () => {
     setReceiptId(null)
     setValue('receiptId', null)
+    capturedReceiptFileRef.current = null
     resetOCR()
     setOcrFieldConfidences({})
     setShowReviewPrompt(false)
   }
 
-  // Handle image ready for OCR processing
+  // Handle image ready for OCR processing - also store the file for offline save
   const handleImageReady = useCallback((file: File) => {
+    capturedReceiptFileRef.current = file
     processImage(file)
   }, [processImage])
 
@@ -169,22 +160,63 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
 
   const onSubmit = (data: ExpenseFormData) => {
     startTransition(async () => {
-      const result = await saveExpense({
-        ...data,
-        receiptId,
-        jobOrderId,
-        isOverhead,
-        gpsPosition: gpsPosition ?? null,
-      })
+      try {
+        let receiptLocalId: string | undefined
 
-      if (result.success) {
+        // Step 1: Save receipt locally first (if present)
+        if (capturedReceiptFileRef.current) {
+          // Prepare OCR result for local storage
+          const ocrResultForStorage: OCRResult | undefined = ocrResult
+            ? {
+                rawText: ocrResult.rawText,
+                confidence: ocrResult.confidence,
+                extractedData: ocrResult.extractedData,
+                processingTime: ocrResult.processingTime,
+                provider: ocrResult.provider,
+              }
+            : undefined
+
+          const localReceipt = await saveReceiptLocally(
+            capturedReceiptFileRef.current,
+            ocrResultForStorage
+          )
+          receiptLocalId = localReceipt.id
+        }
+
+        // Step 2: Save expense locally with receipt reference
+        await saveExpenseLocally(
+          {
+            amount: data.amount,
+            category: data.category,
+            description: data.description,
+            vendorName: data.vendorName,
+            vendorId: data.vendorId,
+            jobOrderId: jobOrderId,
+            isOverhead: isOverhead,
+            expenseDate: data.expenseDate,
+            gpsLatitude: gpsPosition?.latitude ?? null,
+            gpsLongitude: gpsPosition?.longitude ?? null,
+            gpsAccuracy: gpsPosition?.accuracy ?? null,
+            locationExplanation: data.locationExplanation,
+          },
+          receiptLocalId
+        )
+
+        // Show success feedback with offline indicator if not online
+        const isOnline = typeof navigator !== 'undefined' && navigator.onLine
+        
         toast.success('Pengeluaran tersimpan', {
-          description: 'Data berhasil disimpan ke database',
+          description: isOnline
+            ? 'Data tersimpan lokal, akan disinkronkan'
+            : 'Data tersimpan lokal (mode offline)',
+          icon: !isOnline ? <WifiOff className="h-4 w-4" /> : undefined,
         })
+        
         setShowAddAnother(true)
-      } else {
+      } catch (error) {
+        console.error('Failed to save expense locally:', error)
         toast.error('Gagal menyimpan', {
-          description: result.error,
+          description: error instanceof Error ? error.message : 'Terjadi kesalahan. Silakan coba lagi.',
         })
       }
     })
@@ -193,6 +225,7 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
   const handleAddAnother = () => {
     resetForm()
     setReceiptId(null)
+    capturedReceiptFileRef.current = null
     setShowAddAnother(false)
     resetOCR()
     setOcrFieldConfidences({})

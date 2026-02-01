@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { Search, Loader2 } from 'lucide-react'
+import { Search, Loader2, WifiOff } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -28,6 +28,7 @@ interface JobSearchDialogProps {
  * - Loading state with spinner
  * - Empty state message
  * - Clickable job results showing job_number, customer_name, and route
+ * - Offline indicator when using cached data
  */
 export function JobSearchDialog({
   open,
@@ -35,7 +36,7 @@ export function JobSearchDialog({
   onSelect,
 }: JobSearchDialogProps) {
   const [searchValue, setSearchValue] = useState('')
-  const { jobs, isLoading, search, clearResults } = useJobSearch()
+  const { jobs, isLoading, isUsingCache, search, clearResults } = useJobSearch()
 
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +76,14 @@ export function JobSearchDialog({
           <DialogTitle>Pilih Job Order</DialogTitle>
         </DialogHeader>
 
+        {/* Offline Indicator */}
+        {isUsingCache && (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200 text-amber-800 text-sm">
+            <WifiOff className="h-4 w-4 flex-shrink-0" />
+            <span>Menggunakan data tersimpan (offline)</span>
+          </div>
+        )}
+
         {/* Search Input */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -98,7 +107,9 @@ export function JobSearchDialog({
             // Empty State
             <p className="text-center py-8 text-gray-500">
               {searchValue.length >= 2
-                ? 'Tidak ada job order ditemukan'
+                ? isUsingCache
+                  ? 'Tidak ada job order tersimpan yang cocok'
+                  : 'Tidak ada job order ditemukan'
                 : 'Ketik minimal 2 karakter untuk mencari'}
             </p>
           ) : (
