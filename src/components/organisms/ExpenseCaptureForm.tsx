@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useTransition, useCallback } from 'react'
-import { Loader2, Save, Plus } from 'lucide-react'
+import { useState, useTransition, useCallback, useEffect } from 'react'
+import { Loader2, Save, Plus, MapPin, MapPinOff } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils/cn'
 import { useExpenseForm, type ExpenseFormData } from '@/hooks/use-expense-form'
@@ -14,6 +14,8 @@ import { DescriptionInput } from '@/components/molecules/DescriptionInput'
 import { ReceiptCapture } from '@/components/molecules/ReceiptCapture'
 import { ReceiptWarning } from '@/components/molecules/ReceiptWarning'
 import { OCRStatus, ConfidenceField, ManualReviewPrompt } from '@/components/ocr'
+import { JobSelector } from '@/components/job'
+import { useGPS } from '@/hooks/use-gps'
 import { saveExpense } from '@/app/(auth)/capture/actions'
 import { updateReceiptWithOCR } from '@/lib/receipts/upload'
 import { requiresManualReview } from '@/types/ocr'
@@ -34,6 +36,23 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
     vendor?: number
     date?: number
   }>({})
+  
+  // Job linking state
+  const [jobOrderId, setJobOrderId] = useState<string | null>(null)
+  const [isOverhead, setIsOverhead] = useState(false)
+
+  // GPS capture hook
+  const {
+    position: gpsPosition,
+    error: gpsError,
+    isLoading: gpsLoading,
+    capturePosition,
+  } = useGPS()
+
+  // Capture GPS position on form load (silently in background)
+  useEffect(() => {
+    capturePosition()
+  }, [capturePosition])
 
   // OCR hook
   const {
@@ -150,7 +169,13 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
 
   const onSubmit = (data: ExpenseFormData) => {
     startTransition(async () => {
-      const result = await saveExpense({ ...data, receiptId })
+      const result = await saveExpense({
+        ...data,
+        receiptId,
+        jobOrderId,
+        isOverhead,
+        gpsPosition: gpsPosition ?? null,
+      })
 
       if (result.success) {
         toast.success('Pengeluaran tersimpan', {
@@ -172,6 +197,9 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
     resetOCR()
     setOcrFieldConfidences({})
     setShowReviewPrompt(false)
+    // Reset job linking state
+    setJobOrderId(null)
+    setIsOverhead(false)
   }
 
   const handleVendorChange = (value: string, vendorId?: string) => {
@@ -210,6 +238,28 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
         onImageReady={handleImageReady}
         disabled={isPending}
       />
+
+      {/* GPS Status Indicator */}
+      <div className="flex items-center gap-2 text-sm">
+        {gpsLoading ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+            <span className="text-muted-foreground">Mendapatkan lokasi...</span>
+          </>
+        ) : gpsPosition ? (
+          <>
+            <MapPin className="h-4 w-4 text-green-500" />
+            <span className="text-muted-foreground">
+              Lokasi tercatat ({gpsPosition.accuracy.toFixed(0)}m)
+            </span>
+          </>
+        ) : gpsError ? (
+          <>
+            <MapPinOff className="h-4 w-4 text-yellow-500" />
+            <span className="text-muted-foreground">{gpsError}</span>
+          </>
+        ) : null}
+      </div>
 
       {/* OCR Status */}
       <OCRStatus
@@ -250,6 +300,15 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
         value={category as ExpenseCategory | null}
         onChange={(value) => setValue('category', value, { shouldValidate: true })}
         error={errors.category?.message}
+        disabled={isPending}
+      />
+
+      {/* Job Order Selector */}
+      <JobSelector
+        value={jobOrderId}
+        onChange={setJobOrderId}
+        isOverhead={isOverhead}
+        onOverheadChange={setIsOverhead}
         disabled={isPending}
       />
 

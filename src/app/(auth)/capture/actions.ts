@@ -8,8 +8,17 @@ export type SaveExpenseResult =
   | { success: true; data: { id: string } }
   | { success: false; error: string }
 
+interface GPSData {
+  latitude: number
+  longitude: number
+  accuracy: number
+}
+
 interface SaveExpenseInput extends ExpenseFormData {
   receiptId?: string | null
+  jobOrderId?: string | null
+  isOverhead?: boolean
+  gpsPosition?: GPSData | null
 }
 
 export async function saveExpense(formData: SaveExpenseInput): Promise<SaveExpenseResult> {
@@ -29,19 +38,31 @@ export async function saveExpense(formData: SaveExpenseInput): Promise<SaveExpen
       return { success: false, error: 'Sesi tidak valid. Silakan login kembali.' }
     }
 
+    // Build insert data with optional GPS and job fields
+    const insertData: Record<string, unknown> = {
+      user_id: user.id,
+      amount: validated.amount,
+      category_id: null, // Will be linked to category table later
+      vendor_name: validated.vendorName || null,
+      vendor_id: validated.vendorId || null,
+      description: validated.description || null,
+      expense_date: validated.expenseDate.toISOString().split('T')[0],
+      receipt_id: formData.receiptId || null,
+      job_order_id: formData.jobOrderId || null,
+      is_overhead: formData.isOverhead ?? false,
+    }
+
+    // Add GPS coordinates if available
+    if (formData.gpsPosition) {
+      insertData.gps_latitude = formData.gpsPosition.latitude
+      insertData.gps_longitude = formData.gpsPosition.longitude
+      insertData.gps_accuracy = formData.gpsPosition.accuracy
+    }
+
     // Insert expense draft
     const { data: expense, error: insertError } = await supabase
       .from('expense_drafts')
-      .insert({
-        user_id: user.id,
-        amount: validated.amount,
-        category_id: null, // Will be linked to category table later
-        vendor_name: validated.vendorName || null,
-        vendor_id: validated.vendorId || null,
-        description: validated.description || null,
-        expense_date: validated.expenseDate.toISOString().split('T')[0],
-        receipt_id: formData.receiptId || null,
-      })
+      .insert(insertData)
       .select('id')
       .single()
 
