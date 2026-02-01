@@ -7,49 +7,49 @@
 ## Tasks
 
 ### Phase 1: Data Layer
-- [ ] 1.1 Create useExpenses hook
-- [ ] 1.2 Implement server expense fetching
-- [ ] 1.3 Implement local expense fetching
-- [ ] 1.4 Create merge and dedupe logic
-- [ ] 1.5 Define ExpenseFilters interface
+- [x] 1.1 Create useExpenses hook
+- [x] 1.2 Implement server expense fetching
+- [x] 1.3 Implement local expense fetching
+- [x] 1.4 Create merge and dedupe logic
+- [x] 1.5 Define ExpenseFilters interface
 
 ### Phase 2: List Components
-- [ ] 2.1 Create ExpenseListItem component
-- [ ] 2.2 Create ExpenseList container
-- [ ] 2.3 Add empty state component
-- [ ] 2.4 Add loading skeleton
+- [x] 2.1 Create ExpenseListItem component
+- [x] 2.2 Create ExpenseList container
+- [x] 2.3 Add empty state component
+- [x] 2.4 Add loading skeleton
 
 ### Phase 3: Filter Components
-- [ ] 3.1 Create FilterSheet component
-- [ ] 3.2 Create DateRangeFilter component
-- [ ] 3.3 Create CategoryFilter component
-- [ ] 3.4 Create StatusFilter component
-- [ ] 3.5 Create SearchInput component
+- [x] 3.1 Create FilterSheet component
+- [x] 3.2 Create DateRangeFilter component
+- [x] 3.3 Create CategoryFilter component
+- [x] 3.4 Create StatusFilter component
+- [x] 3.5 Create SearchInput component
 
 ### Phase 4: Summary
-- [ ] 4.1 Create SummaryCard component
-- [ ] 4.2 Implement category grouping
-- [ ] 4.3 Add progress bars for breakdown
-- [ ] 4.4 Make summary responsive to filters
+- [x] 4.1 Create SummaryCard component
+- [x] 4.2 Implement category grouping
+- [x] 4.3 Add progress bars for breakdown
+- [x] 4.4 Make summary responsive to filters
 
 ### Phase 5: Detail View
-- [ ] 5.1 Create ExpenseDetailSheet component
-- [ ] 5.2 Display receipt image
-- [ ] 5.3 Show all expense fields
-- [ ] 5.4 Show job order details
-- [ ] 5.5 Show status badges
+- [x] 5.1 Create ExpenseDetailSheet component
+- [x] 5.2 Display receipt image
+- [x] 5.3 Show all expense fields
+- [x] 5.4 Show job order details
+- [x] 5.5 Show status badges
 
 ### Phase 6: Page Assembly
-- [ ] 6.1 Create history page layout
-- [ ] 6.2 Add header with search and filter
-- [ ] 6.3 Integrate all components
-- [ ] 6.4 Handle filter state
+- [x] 6.1 Create history page layout
+- [x] 6.2 Add header with search and filter
+- [x] 6.3 Integrate all components
+- [x] 6.4 Handle filter state
 
 ### Phase 7: Polish
-- [ ] 7.1 Add pull-to-refresh
-- [ ] 7.2 Add infinite scroll or pagination
-- [ ] 7.3 Optimize for large lists
-- [ ] 7.4 Test filter combinations
+- [x] 7.1 Add pull-to-refresh
+- [x] 7.2 Add infinite scroll or pagination
+- [x] 7.3 Optimize for large lists
+- [x] 7.4 Test filter combinations
 
 ## Verification
 - [ ] History shows expense list
