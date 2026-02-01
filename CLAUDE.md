@@ -1,7 +1,7 @@
-# GAMA Money Recorder - Project Context
+# GAMA Money Recorder - Project Context for Claude Code
 
-> **Sync Note**: Keep this file in sync with `CLAUDE.md` in project root.
-> When updating this file, also update CLAUDE.md to maintain consistency.
+> **Sync Note**: Keep this file in sync with `.kiro/steering/project-context.md` for Kiro.
+> When updating this file, also update the Kiro steering file to maintain consistency.
 
 ## Project Overview
 

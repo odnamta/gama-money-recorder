@@ -8,93 +8,163 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- v0.1 Foundation - Project setup, auth, navigation
-- v0.2 Expense Capture - Basic expense entry
-- v0.3 Receipt Photo - Receipt photo capture
-- v0.3.1 OCR Integration - Auto-extract from receipts
-- v0.4 Job Linking - Link expenses to job orders
-- v0.5 Offline Support - IndexedDB and sync
-- v0.6 History View - Expense history and filters
+- v0.7 Settings Page - User preferences, sync settings, storage management
+- v0.8 Dashboard - Summary stats, quick actions, recent activity
+- v0.9 ERP Integration - Create bkk_records drafts, approval workflow
+- v1.0 Polish & PWA - Install prompts, notifications, final testing
+
+---
+
+## [0.6.0] - 2026-02-01
+
+### Added
+- History page with expense list view
+- `useExpenses` hook with hybrid local/server data fetching
+- `ExpenseListItem` component with category icons and status badges
+- `FilterSheet` with date range, category, and status filters
+- `DateRangeFilter` with quick filters (Hari Ini, Minggu Ini, Bulan Ini)
+- `CategoryFilter` with multi-select and count display
+- `StatusFilter` for sync and approval status
+- `SearchInput` with debounce for vendor/description search
+- `SummaryCard` with total, count, and category breakdown
+- `ExpenseDetailSheet` with receipt image display
+- `ApprovalStatusBadge` component
+- Pull-to-refresh functionality (`usePullToRefresh` hook)
+- Pagination with "Load More" button
+- Sheet and Progress UI components from shadcn/ui
+- `ExpenseFilters` and `DisplayExpense` types
+
+## [0.5.0] - 2026-01-31
+
+### Added
+- Dexie.js IndexedDB integration for offline storage
+- `LocalExpense` and `LocalReceipt` database tables
+- Sync queue management with retry logic
+- `SyncManager` for background synchronization
+- `useOnlineStatus` hook for network detection
+- `usePendingSync` hook for sync queue monitoring
+- `OfflineIndicator` component in header
+- `SyncStatusBadge` component
+- `PendingSyncList` component for settings page
+- `ManualSyncButton` for manual sync trigger
+- `SyncNotificationProvider` for toast notifications
+- Job order caching for offline access
+- `JobCacheInitializer` provider
+- Receipt storage utilities for IndexedDB blobs
+- Auto-sync on network reconnection
+
+## [0.4.0] - 2026-01-30
+
+### Added
+- Job order search with Supabase query
+- `JobSearchDialog` with search input and results
+- `JobSelector` component for expense form
+- `RecentJobsList` with quick selection
+- `JobCard` component for job display
+- `useJob` hook for job order fetching
+- `useJobSearch` hook with debounce
+- `useRecentJobs` hook for recent selections
+- GPS capture with `useGps` hook
+- Location validation against job coordinates
+- `LocationWarning` component for distance alerts
+- `useJobLocation` hook for validation logic
+- Geo utilities (haversine distance calculation)
+- Overhead toggle for non-job expenses
+
+## [0.3.1] - 2026-01-29
+
+### Added
+- Tesseract.js integration for client-side OCR
+- Receipt text parsing with regex patterns
+- Amount extraction from Indonesian receipt formats
+- Vendor name extraction
+- Date extraction with multiple format support
+- `OCRStatus` component with processing states
+- `ConfidenceBadge` component
+- `ConfidenceField` wrapper for form fields
+- `ManualReviewPrompt` for low confidence results
+- OCR API route for server-side processing
+- OCR types and interfaces
+
+## [0.3.0] - 2026-01-28
+
+### Added
+- Camera capture with device camera API
+- Gallery image selection
+- Image compression (max 1MB, 1200px width)
+- Image validation (type, size, dimensions)
+- `ReceiptCapture` component with preview
+- `ReceiptWarning` for required receipt notice
+- Supabase Storage upload utilities
+- Receipt upload client for browser
+- Server-side upload handler
+
+## [0.2.0] - 2026-01-27
+
+### Added
+- `ExpenseCaptureForm` organism component
+- `AmountInput` with IDR formatting
+- `CategorySelector` with 8 expense categories
+- `VendorInput` with autocomplete suggestions
+- `DatePicker` component
+- `DescriptionInput` for notes
+- Form validation with Zod schema
+- `useExpenseForm` hook for form state
+- Expense categories constant file
+- Currency formatting utilities
+- Date formatting utilities
+
+## [0.1.0] - 2026-01-26
+
+### Added
+- Next.js 15 project setup with App Router
+- TypeScript strict mode configuration
+- PWA configuration with Serwist
+- Supabase authentication integration
+- Google OAuth for @gama-group.co domain
+- Role-based access control setup
+- Bottom navigation component
+- Auth layout with protected routes
+- Public layout for login
+- Dashboard page placeholder
+- Capture page placeholder
+- History page placeholder
+- Settings page placeholder
+- Login page with Google sign-in
+- Access denied page
+- Supabase server and client utilities
+- shadcn/ui component setup (button, input, label, dialog, switch, scroll-area)
+- TailwindCSS configuration
+- ESLint configuration
 
 ---
 
 ## Roadmap
 
-### v0.1 - Foundation (Target: Week 1)
-- [ ] Next.js 15 project setup
-- [ ] PWA configuration
-- [ ] Supabase authentication
-- [ ] Google OAuth integration
-- [ ] Role-based access control
-- [ ] Bottom navigation
+### v0.7 - Settings Page (Next)
+- [ ] User profile display
+- [ ] Sync settings (auto-sync toggle, sync interval)
+- [ ] Storage management (clear cache, view usage)
+- [ ] Pending sync list with retry
+- [ ] App version info
+- [ ] Logout functionality
 
-### v0.2 - Expense Capture (Target: Week 2)
-- [ ] Expense capture form
-- [ ] Amount input with IDR formatting
-- [ ] Category selection
-- [ ] Vendor input with suggestions
-- [ ] Date picker
-- [ ] Form validation
+### v0.8 - Dashboard
+- [ ] Summary statistics (today, week, month)
+- [ ] Quick capture button
+- [ ] Recent expenses list
+- [ ] Pending sync count
+- [ ] Role-specific content
 
-### v0.3 - Receipt Photo (Target: Week 3)
-- [ ] Camera capture
-- [ ] Gallery selection
-- [ ] Image compression
-- [ ] Supabase Storage upload
-- [ ] Receipt requirement warning
+### v0.9 - ERP Integration
+- [ ] Create bkk_records drafts on sync
+- [ ] Approval status tracking
+- [ ] Finance notification
+- [ ] Rejection handling
 
-### v0.3.1 - OCR Integration (Target: Week 3-4)
-- [ ] Google Cloud Vision API
-- [ ] Receipt text parsing
-- [ ] Auto-fill form fields
-- [ ] Confidence indicators
-- [ ] Tesseract.js fallback
-
-### v0.4 - Job Linking (Target: Week 4)
-- [ ] Job order search
-- [ ] Recent jobs quick select
-- [ ] Overhead toggle
-- [ ] GPS capture
-- [ ] Location validation
-
-### v0.5 - Offline Support (Target: Week 5)
-- [ ] Dexie.js IndexedDB
-- [ ] Local expense storage
-- [ ] Local receipt storage
-- [ ] Sync queue management
-- [ ] Auto-sync on reconnect
-- [ ] Job order caching
-
-### v0.6 - History View (Target: Week 6)
-- [ ] Expense list view
-- [ ] Date range filter
-- [ ] Category filter
-- [ ] Search functionality
-- [ ] Summary statistics
-- [ ] Expense detail view
-
-### v1.0 - MVP Release (Target: Week 7-8)
-- [ ] Bug fixes and polish
+### v1.0 - Polish & PWA
+- [ ] PWA install prompt
+- [ ] Push notifications
 - [ ] Performance optimization
 - [ ] User acceptance testing
 - [ ] Production deployment
-
----
-
-## Version History
-
-_No releases yet. Development starting soon._
-
-<!-- 
-## [0.1.0] - YYYY-MM-DD
-
-### Added
-- Initial project setup
-- ...
-
-### Changed
-- ...
-
-### Fixed
-- ...
--->
