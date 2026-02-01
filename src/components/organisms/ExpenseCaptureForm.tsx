@@ -23,9 +23,13 @@ import type { OCRResult } from '@/types/ocr'
 
 interface ExpenseCaptureFormProps {
   initialVendors?: VendorSuggestion[]
+  initialCategory?: ExpenseCategory
 }
 
-export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormProps) {
+export function ExpenseCaptureForm({ 
+  initialVendors = [],
+  initialCategory 
+}: ExpenseCaptureFormProps) {
   const [isPending, startTransition] = useTransition()
   const [showAddAnother, setShowAddAnother] = useState(false)
   const [vendorSuggestions] = useState<VendorSuggestion[]>(initialVendors)
@@ -111,6 +115,13 @@ export function ExpenseCaptureForm({ initialVendors = [] }: ExpenseCaptureFormPr
   const vendorName = watch('vendorName')
   const expenseDate = watch('expenseDate')
   const description = watch('description')
+
+  // Set initial category from URL parameter
+  useEffect(() => {
+    if (initialCategory) {
+      setValue('category', initialCategory, { shouldValidate: true })
+    }
+  }, [initialCategory, setValue])
 
   const handleReceiptCaptured = useCallback(async (id: string) => {
     setReceiptId(id)

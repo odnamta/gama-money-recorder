@@ -8,9 +8,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- v0.8 Dashboard - Summary stats, quick actions, recent activity
 - v0.9 ERP Integration - Create bkk_records drafts, approval workflow
 - v1.0 Polish & PWA - Install prompts, notifications, final testing
+
+---
+
+## [0.8.0] - 2026-02-01
+
+### Added
+- Dashboard page with comprehensive expense overview
+- `useDashboardStats` hook with period calculations (today, week, month)
+- `useRecentExpenses` hook with local/server data merging
+- `PeriodSummaryCard` component with compact currency display
+- `SummaryCards` container with loading skeletons
+- `QuickActions` component with main capture button
+- Category shortcuts (BBM, Tol, Makan) for quick expense entry
+- Pre-selected category navigation from shortcuts
+- `RecentExpenses` component showing last 5 expenses
+- Empty state for no recent expenses
+- "Lihat Semua" link to history page
+- `DashboardSyncStatus` component with pending/failed counts
+- Quick sync button integration
+- `ManagerSection` with role-based visibility
+- `PendingApprovals` component for finance roles
+- `TeamSummary` component for operations managers
+- Dashboard header with time-based greeting (Selamat Pagi/Siang/Sore/Malam)
+- Offline indicator integration
+- Pull-to-refresh functionality
 
 ---
 
@@ -165,14 +189,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Roadmap
 
-### v0.8 - Dashboard (Next)
-- [ ] Summary statistics (today, week, month)
-- [ ] Quick capture button
-- [ ] Recent expenses list
-- [ ] Pending sync count
-- [ ] Role-specific content
+### v0.8 - Dashboard ✅
+- [x] Summary statistics (today, week, month)
+- [x] Quick capture button
+- [x] Recent expenses list
+- [x] Pending sync count
+- [x] Role-specific content
 
-### v0.9 - ERP Integration
+### v0.9 - ERP Integration (Next)
 - [ ] Create bkk_records drafts on sync
 - [ ] Approval status tracking
 - [ ] Finance notification

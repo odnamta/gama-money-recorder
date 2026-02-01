@@ -1,8 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
 import { getRecentVendors } from '@/lib/queries/vendors'
 import { ExpenseCaptureForm } from '@/components/organisms/ExpenseCaptureForm'
+import type { ExpenseCategory } from '@/constants/expense-categories'
 
-export default async function CapturePage() {
+interface CapturePageProps {
+  searchParams: Promise<{ category?: string }>
+}
+
+export default async function CapturePage({ searchParams }: CapturePageProps) {
   const supabase = await createClient()
   const {
     data: { user },
@@ -10,6 +15,10 @@ export default async function CapturePage() {
 
   // Fetch recent vendors for suggestions
   const recentVendors = user ? await getRecentVendors(user.id) : []
+
+  // Get pre-selected category from URL
+  const params = await searchParams
+  const initialCategory = params.category as ExpenseCategory | undefined
 
   return (
     <div className="px-4 py-6">
@@ -20,7 +29,10 @@ export default async function CapturePage() {
       </div>
 
       {/* Form */}
-      <ExpenseCaptureForm initialVendors={recentVendors} />
+      <ExpenseCaptureForm 
+        initialVendors={recentVendors}
+        initialCategory={initialCategory}
+      />
     </div>
   )
 }
