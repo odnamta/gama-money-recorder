@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   Calendar,
   MapPin,
@@ -26,7 +26,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { SyncStatusBadge } from '@/components/offline/SyncStatusBadge'
-import { ApprovalStatusBadge } from './ApprovalStatusBadge'
+import { ApprovalStatusBadge, type ApprovalDetails } from './ApprovalStatusBadge'
+import { SubmitButton } from '@/components/erp/SubmitButton'
+import { RejectionInfo } from '@/components/erp/RejectionInfo'
 import { cn } from '@/lib/utils/cn'
 import { formatCurrency } from '@/lib/utils/format-currency'
 import { formatDate } from '@/lib/utils/format-date'
@@ -91,6 +93,8 @@ interface ExpenseDetailSheetProps {
   open: boolean
   /** Callback when open state changes */
   onOpenChange: (open: boolean) => void
+  /** Callback when expense is updated (e.g., after submit) */
+  onExpenseUpdate?: () => void
 }
 
 /**
@@ -107,9 +111,38 @@ export function ExpenseDetailSheet({
   expense,
   open,
   onOpenChange,
+  onExpenseUpdate,
 }: ExpenseDetailSheetProps) {
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null)
   const [isLoadingReceipt, setIsLoadingReceipt] = useState(false)
+  const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+
+  // Handle successful submission
+  const handleSubmitSuccess = useCallback((bkkNumber?: string) => {
+    setToastMessage({ 
+      type: 'success', 
+      text: bkkNumber ? `Diajukan dengan nomor ${bkkNumber}` : 'Berhasil diajukan' 
+    })
+    onExpenseUpdate?.()
+    // Auto-close toast after 3 seconds
+    setTimeout(() => setToastMessage(null), 3000)
+  }, [onExpenseUpdate])
+
+  // Handle submission error
+  const handleSubmitError = useCallback((error: string) => {
+    setToastMessage({ type: 'error', text: error })
+    setTimeout(() => setToastMessage(null), 5000)
+  }, [])
+
+  // Handle resubmit success
+  const handleResubmitSuccess = useCallback((bkkNumber?: string) => {
+    setToastMessage({ 
+      type: 'success', 
+      text: bkkNumber ? `Diajukan ulang dengan nomor ${bkkNumber}` : 'Berhasil diajukan ulang' 
+    })
+    onExpenseUpdate?.()
+    setTimeout(() => setToastMessage(null), 3000)
+  }, [onExpenseUpdate])
 
   // Load receipt image when expense changes
   useEffect(() => {
@@ -321,8 +354,28 @@ export function ExpenseDetailSheet({
               
               <div className="flex items-center justify-between">
                 <span className="text-sm text-slate-600">Persetujuan</span>
-                <ApprovalStatusBadge status={expense.approvalStatus} showLabel />
+                <ApprovalStatusBadge 
+                  status={expense.approvalStatus} 
+                  showLabel 
+                  details={{
+                    bkkNumber: expense.bkkNumber,
+                    submittedAt: expense.submittedAt,
+                    approvedAt: expense.approvedAt,
+                    approvedBy: expense.approvedByName,
+                    rejectionReason: expense.rejectionReason,
+                  } as ApprovalDetails}
+                />
               </div>
+
+              {/* BKK Number */}
+              {expense.bkkNumber && (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600">No. BKK</span>
+                  <span className="text-sm font-mono text-slate-900">
+                    {expense.bkkNumber}
+                  </span>
+                </div>
+              )}
 
               {expense.ocrConfidence !== undefined && (
                 <div className="flex items-center justify-between">
@@ -333,6 +386,45 @@ export function ExpenseDetailSheet({
                 </div>
               )}
             </div>
+
+            {/* Rejection Info */}
+            {expense.approvalStatus === 'rejected' && expense.rejectionReason && (
+              <RejectionInfo
+                expenseId={expense.serverId || expense.id}
+                reason={expense.rejectionReason}
+                rejectedAt={expense.approvedAt}
+                rejectedBy={expense.approvedByName}
+                allowResubmit={expense.syncStatus === 'synced'}
+                onResubmit={handleResubmitSuccess}
+                onError={handleSubmitError}
+              />
+            )}
+
+            {/* Submit Button */}
+            {expense.serverId && (
+              <SubmitButton
+                expenseId={expense.serverId}
+                approvalStatus={expense.approvalStatus}
+                syncStatus={expense.syncStatus}
+                onSubmit={handleSubmitSuccess}
+                onError={handleSubmitError}
+                fullWidth
+              />
+            )}
+
+            {/* Toast Message */}
+            {toastMessage && (
+              <div
+                className={cn(
+                  'rounded-lg p-3 text-sm text-center',
+                  toastMessage.type === 'success'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-red-100 text-red-800'
+                )}
+              >
+                {toastMessage.text}
+              </div>
+            )}
 
             {/* Metadata */}
             <div className="text-xs text-slate-400 text-center space-y-1">

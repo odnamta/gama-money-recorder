@@ -2,13 +2,14 @@
 
 import { ExternalLink, HelpCircle, Shield } from 'lucide-react'
 
+// App version - update with each release
+const APP_VERSION = '1.0.0'
+const BUILD_DATE = '2026-02-01'
+
 /**
  * App information section
  */
 export function AppInfoSection() {
-  const appVersion = '0.6.0' // Update this with each release
-  const buildDate = '2026-02-01'
-
   return (
     <div className="bg-white rounded-lg p-4 space-y-4">
       <h3 className="font-semibold text-lg">Informasi Aplikasi</h3>
@@ -17,11 +18,11 @@ export function AppInfoSection() {
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <span className="text-sm text-muted-foreground">Versi</span>
-          <span className="text-sm font-mono font-medium">v{appVersion}</span>
+          <span className="text-sm font-mono font-medium">v{APP_VERSION}</span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-sm text-muted-foreground">Build</span>
-          <span className="text-sm font-mono">{buildDate}</span>
+          <span className="text-sm font-mono">{BUILD_DATE}</span>
         </div>
       </div>
       

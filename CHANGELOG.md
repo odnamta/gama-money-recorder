@@ -8,8 +8,79 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- v0.9 ERP Integration - Create bkk_records drafts, approval workflow
-- v1.0 Polish & PWA - Install prompts, notifications, final testing
+- Push notifications for sync and approval status
+- Splash screen assets
+- Virtual scrolling for large lists
+
+---
+
+## [1.0.0] - 2026-02-01
+
+### Added
+- PWA install prompt with `usePWAInstall` hook
+- `InstallBanner` component with iOS instructions
+- `InstallPromptSettings` component for settings page
+- `InstallSection` in settings page
+- `ErrorBoundary` component for crash recovery
+- Indonesian error messages (`lib/errors/messages.ts`)
+- `ErrorState` component for inline errors
+- `EmptyState` component for empty lists
+- App version display in settings (v1.0.0)
+- Push notification infrastructure with VAPID keys
+- `usePushNotifications` hook for subscription management
+- `NotificationSection` in settings page
+- Service worker push event handlers
+- Notification templates for sync and approval events
+- `web-push` library for server-side notifications
+
+### Changed
+- Updated manifest.ts with full PWA configuration
+- Updated app icons to PNG format (192x192, 512x512)
+- Updated button touch targets to 44px minimum (accessibility)
+- Added active states to all button variants
+- Added success button variant
+- Updated app description to Indonesian
+- Updated root layout with ErrorBoundary wrapper
+
+### Fixed
+- Button whitespace-nowrap typo in class
+
+---
+
+## [0.9.0] - 2026-02-01
+
+### Added
+- ERP Integration with BKK record creation
+- BKK number generator (format: BKK-YYYYMM-XXXX)
+- `submitForApproval` function with BKK record linking
+- `approveExpense` and `rejectExpense` functions for finance roles
+- `resubmitExpense` function for rejected expenses
+- API routes for expense approval workflow:
+  - `POST /api/expenses/[id]/submit`
+  - `POST /api/expenses/[id]/approve`
+  - `POST /api/expenses/[id]/reject`
+  - `POST /api/expenses/[id]/resubmit`
+- `SubmitButton` component for expense submission
+- `RejectionInfo` component with resubmit action
+- Enhanced `ApprovalStatusBadge` with tooltip details
+- Approval page (`/approval`) for finance roles
+- `ApprovalList` component with pending expenses
+- `ApprovalItem` component with submitter info
+- `ApprovalDetailSheet` with receipt viewer
+- `ApprovalActions` component (approve/reject buttons)
+- `usePendingApprovals` hook for approval page
+- `usePendingCount` hook for badge display
+- Pending count badge in bottom navigation
+- Role-based navigation (approval link for finance roles)
+- Approval status filter in history page
+- BKK number display in expense detail
+- Rejection reason display with resubmit option
+
+### Changed
+- Updated `ExpenseDetailSheet` with submit button and rejection info
+- Updated `BottomNav` with conditional approval link
+- Updated `PendingApprovals` dashboard component to link to approval page
+- Added ERP fields to `DisplayExpense` type
 
 ---
 
@@ -189,22 +260,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Roadmap
 
-### v0.8 - Dashboard ✅
-- [x] Summary statistics (today, week, month)
-- [x] Quick capture button
-- [x] Recent expenses list
-- [x] Pending sync count
-- [x] Role-specific content
+### v0.9 - ERP Integration ✅
+- [x] Create bkk_records drafts on sync
+- [x] Approval status tracking
+- [x] Finance approval page
+- [x] Rejection handling with resubmit
 
-### v0.9 - ERP Integration (Next)
-- [ ] Create bkk_records drafts on sync
-- [ ] Approval status tracking
-- [ ] Finance notification
-- [ ] Rejection handling
-
-### v1.0 - Polish & PWA
-- [ ] PWA install prompt
-- [ ] Push notifications
-- [ ] Performance optimization
-- [ ] User acceptance testing
+### v1.0 - Polish & PWA ✅
+- [x] PWA install prompt
+- [x] Error boundary and messages
+- [x] Accessibility improvements
+- [ ] Push notifications (deferred)
 - [ ] Production deployment

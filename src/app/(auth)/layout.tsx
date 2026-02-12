@@ -2,6 +2,7 @@ import { BottomNav } from '@/components/navigation/BottomNav'
 import { JobCacheInitializer } from '@/components/providers/JobCacheInitializer'
 import { SyncNotificationProvider } from '@/components/providers/SyncNotificationProvider'
 import { OfflineIndicator } from '@/components/offline'
+import { InstallBanner } from '@/components/pwa'
 
 export default function AuthLayout({
   children,
@@ -17,6 +18,7 @@ export default function AuthLayout({
             {children}
           </main>
           <BottomNav />
+          <InstallBanner />
         </div>
       </SyncNotificationProvider>
     </JobCacheInitializer>

@@ -4,6 +4,8 @@ import { PendingSyncSection } from '@/components/settings/PendingSyncSection'
 import { StorageSection } from '@/components/settings/StorageSection'
 import { AppInfoSection } from '@/components/settings/AppInfoSection'
 import { LogoutSection } from '@/components/settings/LogoutSection'
+import { InstallSection } from '@/components/settings/InstallSection'
+import { NotificationSection } from '@/components/settings/NotificationSection'
 
 /**
  * Settings page
@@ -20,6 +22,8 @@ export default function SettingsPage() {
       {/* Content */}
       <div className="px-4 py-4 space-y-4">
         <ProfileSection />
+        <InstallSection />
+        <NotificationSection />
         <SyncSection />
         <PendingSyncSection />
         <StorageSection />

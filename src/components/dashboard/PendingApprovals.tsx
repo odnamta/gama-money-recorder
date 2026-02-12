@@ -54,9 +54,8 @@ export function PendingApprovals() {
   }
 
   const handleClick = () => {
-    // Navigate to approvals page (to be implemented in v0.9)
-    // For now, navigate to history with a filter
-    router.push('/history?status=pending_approval')
+    // Navigate to approvals page
+    router.push('/approval')
   }
 
   return (

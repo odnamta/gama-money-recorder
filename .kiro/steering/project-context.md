@@ -154,7 +154,7 @@ formatDate(date, 'relative') // "Hari ini" / "Kemarin" / "3 hari lalu"
 - **TypeScript**: 0 errors
 - **ESLint**: 0 errors
 - **Build**: Passing
-- **Version**: v0.8
+- **Version**: v1.0
 
 ## Feature Roadmap
 
@@ -169,14 +169,42 @@ formatDate(date, 'relative') // "Hari ini" / "Kemarin" / "3 hari lalu"
 | v0.6 | History View | ✅ Done |
 | v0.7 | Settings Page | ✅ Done |
 | v0.8 | Dashboard | ✅ Done |
-| v0.9 | ERP Integration | 🔜 Next |
-| v1.0 | Polish & PWA | 📋 Planned |
+| v0.9 | ERP Integration | ✅ Done |
+| v1.0 | Polish & PWA | ✅ Done |
 
 ## Active Sprint Tasks
 
-- [ ] v0.9 ERP Integration - Create bkk_records drafts, approval workflow
-- [ ] Test dashboard with real devices
-- [ ] QA testing with field staff
+- [ ] Test approval workflow with real devices
+- [ ] QA testing with field staff and finance team
+- [ ] Production deployment to Vercel
+- [ ] Set up error monitoring (Sentry)
+
+## Tech Debt & Nice-to-Have Features
+
+### v1.0 Polish & PWA (Deferred)
+| Feature | Priority | Description | Location |
+|---------|----------|-------------|----------|
+| Splash screen | Low | Custom splash screen for PWA | `public/` |
+| Virtual scrolling | Low | For long expense lists (100+ items) | `src/components/history/ExpenseList.tsx` |
+| PNG app icons | Medium | Replace placeholder PNGs with actual icons | `public/icons/` |
+| Screenshots | Low | Add actual app screenshots for PWA install | `public/screenshots/` |
+| Save push subscriptions | Medium | Store subscriptions in database for server-side push | `src/lib/notifications/` |
+
+### v0.9 ERP Integration (Deferred)
+| Feature | Priority | Description | Location |
+|---------|----------|-------------|----------|
+| Batch submit | Medium | Submit multiple expenses at once from history page | `src/app/(auth)/history/page.tsx` |
+| Batch approve | Medium | Approve multiple expenses at once for finance | `src/components/approval/ApprovalList.tsx` |
+| Edit rejected | Low | Allow editing rejected expense before resubmit | `src/components/history/ExpenseDetailSheet.tsx` |
+| API rate limiting | Low | Add rate limiting to approval API routes | `src/app/api/expenses/[id]/*/route.ts` |
+| Optimistic updates | Low | Update UI immediately before server response | All approval components |
+
+### Future Enhancements
+| Feature | Priority | Description |
+|---------|----------|-------------|
+| Email notifications | Low | Email summary of pending approvals |
+| Expense reports | Medium | Generate PDF reports for approved expenses |
+| Analytics dashboard | Low | Charts and trends for expense data |
 
 ## DO NOT
 
@@ -216,6 +244,8 @@ const data = result.data as TableType[] | null
 
 ## Recent Changes
 
+- 2026-02-01: v1.0 - Polish & PWA (install prompts, error handling, accessibility)
+- 2026-02-01: v0.9 - ERP Integration (BKK records, approval workflow, finance approval page)
 - 2026-02-01: v0.8 - Dashboard (summary stats, quick actions, recent expenses, manager section)
 - 2026-02-01: v0.7 - Settings Page (profile, sync settings, storage management, logout)
 - 2026-02-01: v0.6 - History View (filtering, search, detail view, pull-to-refresh, pagination)

@@ -80,4 +80,13 @@ export interface DisplayExpense {
   createdAt: string
   updatedAt?: string
   source: ExpenseSource
+  // ERP Integration fields
+  bkkNumber?: string
+  bkkRecordId?: string
+  submittedAt?: string
+  submittedBy?: string
+  approvedAt?: string
+  approvedBy?: string
+  approvedByName?: string
+  rejectionReason?: string
 }
