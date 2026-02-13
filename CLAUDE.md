@@ -1,15 +1,14 @@
-# GAMA Money Recorder - Project Context for Claude Code
+# GAMA Money Recorder - Satellite App
 
 > **Sync Note**: Keep this file in sync with `.kiro/steering/project-context.md` for Kiro.
-> When updating this file, also update the Kiro steering file to maintain consistency.
+> **Part of**: `gama/` ecosystem (see `gama/CLAUDE.md`)
 
-## Project Overview
+## Overview
 
-- **App**: GAMA Money Recorder (PWA satellite app)
-- **Parent System**: GAMA ERP
+- **Type**: PWA satellite app for GIS-ERP
 - **Purpose**: Field expense capture with OCR and offline support
 - **Owner**: Dio Atmando
-- **GitHub**: https://github.com/odnamta/gama-money-recorder
+- **GitHub**: `odnamta/gama-money-recorder`
 
 ## Tech Stack
 
